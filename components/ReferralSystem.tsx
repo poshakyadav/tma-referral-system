@@ -1,5 +1,6 @@
 import { initUtils } from "@telegram-apps/sdk";
 import { useEffect, useState } from "react";
+import { logError } from "@/lib/logging";  // Highlighted: Importing logError function
 
 interface ReferralSystemProps {
     initData: string;
@@ -25,6 +26,7 @@ const ReferralSystem: React.FC<ReferralSystemProps> = ({ initData, userId, start
                     console.log('Referral saved successfully');
                 } catch (error) {
                     console.error('Error saving referral', error);
+                    logError('ReferralSystem', 'Error saving referral', error);  // Highlighted: Logging the error
                 }
             }
         }
@@ -40,6 +42,7 @@ const ReferralSystem: React.FC<ReferralSystemProps> = ({ initData, userId, start
                     console.log('Referrals fetched successfully', data);
                 } catch (error) {
                     console.error('Error fetching referrals', error);
+                    logError('ReferralSystem', 'Error fetching referrals', error);  // Highlighted: Logging the error
                 }
             }
         }
@@ -53,13 +56,13 @@ const ReferralSystem: React.FC<ReferralSystemProps> = ({ initData, userId, start
         const inviteLink = `${INVITE_URL}?startapp=${userId}`;
         const shareText = `Join me on this awesome Project`;
         const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`;
-        console.log("Invite URL: ", fullUrl); // Log URL
+        console.log("Invite URL: ", fullUrl);
         utils.openTelegramLink(fullUrl);
     }
 
     const handleCopyLink = () => {
         const inviteLink = `${INVITE_URL}?startapp=${userId}`;
-        console.log("Copied Invite Link: ", inviteLink); // Log copied URL
+        console.log("Copied Invite Link: ", inviteLink);
         navigator.clipboard.writeText(inviteLink);
         alert('Invite link copied to clipboard!');
     }
