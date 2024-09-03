@@ -1,9 +1,14 @@
-// lib/storage.ts
+import { db, ref, set, push, get, child } from "./firebase";
 
-import { db, ref, set, get, child, push } from './firebase';
-
-// Save referral information in Firebase
 export async function saveReferral(userId: string, referrerId: string) {
+    const existingReferrer = await getReferrer(userId);
+    if (existingReferrer) {
+        console.log(`User ${userId} has already been referred by ${existingReferrer}`);
+        return;
+    }
+
+    console.log("Saving referral: ", { userId, referrerId });
+
     const referralRef = ref(db, `referrals/${referrerId}`);
     const newReferralRef = push(referralRef);
     await set(newReferralRef, userId);
@@ -12,26 +17,14 @@ export async function saveReferral(userId: string, referrerId: string) {
     await set(referredByRef, referrerId);
 }
 
-// Get referrals for a given user from Firebase
 export async function getReferrals(userId: string): Promise<string[]> {
-    const referralRef = ref(db, `referrals/${userId}`);
-    const snapshot = await get(referralRef);
-    
-    if (snapshot.exists()) {
-        return Object.values(snapshot.val());
-    } else {
-        return [];
-    }
+    const referralsRef = ref(db, `referrals/${userId}`);
+    const snapshot = await get(referralsRef);
+    return snapshot.exists() ? Object.values(snapshot.val()) : [];
 }
 
-// Get the referrer for a given user from Firebase
 export async function getReferrer(userId: string): Promise<string | null> {
-    const referrerRef = ref(db, `referredBy/${userId}`);
-    const snapshot = await get(referrerRef);
-
-    if (snapshot.exists()) {
-        return snapshot.val();
-    } else {
-        return null;
-    }
+    const referredByRef = ref(db, `referredBy/${userId}`);
+    const snapshot = await get(referredByRef);
+    return snapshot.exists() ? snapshot.val() : null;
 }
