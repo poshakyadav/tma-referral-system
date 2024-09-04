@@ -7,7 +7,7 @@ export async function saveReferral(userId: string, referrerId: string) {
         return;
     }
 
-    console.log("Saving referral: ", { userId, referrerId });
+    alert(`Saving referral:  ${ userId } ${referrerId}`);
 
     const referralRef = ref(db, `referrals/${referrerId}`);
     const newReferralRef = push(referralRef);
