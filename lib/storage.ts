@@ -3,7 +3,7 @@ import { db, ref, set, push, get, child } from "./firebase";
 export async function saveReferral(userId: string, referrerId: string) {
     const existingReferrer = await getReferrer(userId);
     if (existingReferrer) {
-        console.log(`User ${userId} has already been referred by ${existingReferrer}`);
+        alert(`User ${userId} has already been referred by ${existingReferrer}`);
         return;
     }
 
